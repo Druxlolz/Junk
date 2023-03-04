@@ -1,0 +1,73 @@
+-- Define a function to obfuscate a single character
+function obfuscate_char(char)
+  local charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  local index = math.random(1, #charset)
+  local obfuscated_char = string.sub(charset, index, index)
+  return obfuscated_char
+end
+
+-- Define a function to obfuscate the text using a dynamically generated obfuscation algorithm
+function obfuscate(text)
+  local obfuscation_functions = {
+    function(char) return obfuscate_char(char) end,
+    function(char) return string.upper(char) end,
+    function(char) return string.reverse(char) end,
+    function(char) return string.char(string.byte(char) + 1) end
+  }
+
+  -- Define a random initial obfuscation algorithm using the obfuscation functions
+  local obfuscation_algorithm = {}
+  for i = 1, #text do
+    local index = math.random(1, #obfuscation_functions)
+    table.insert(obfuscation_algorithm, obfuscation_functions[index])
+  end
+
+  -- Apply the dynamic obfuscation algorithm to the input text
+  local obfuscated = ""
+  for i = 1, #text do
+    local char = string.sub(text, i, i)
+    local obfuscation_function = obfuscation_algorithm[i]
+    char = obfuscation_function(char)
+    obfuscated = obfuscated .. char
+  end
+  return obfuscated
+end
+
+-- Define a function to deobfuscate the text using a reverse dynamically generated obfuscation algorithm
+function deobfuscate(obfuscated)
+  -- Define the initial obfuscation algorithm as a series of deobfuscation functions
+  local deobfuscation_functions = {
+    function(char) return string.lower(char) end,
+    function(char) return string.reverse(char) end,
+    function(char) return string.char(string.byte(char) - 1) end,
+    function(char) return char end
+  }
+
+  -- Define a random initial deobfuscation algorithm using the deobfuscation functions
+  local deobfuscation_algorithm = {}
+  for i = 1, #obfuscated do
+    local index = math.random(1, #deobfuscation_functions)
+    table.insert(deobfuscation_algorithm, deobfuscation_functions[index])
+  end
+
+  -- Apply the reverse dynamic obfuscation algorithm to the obfuscated text
+  local deobfuscated = ""
+  for i = 1, #obfuscated do
+    local char = string.sub(obfuscated, i, i)
+    local deobfuscation_function = deobfuscation_algorithm[i]
+    char = deobfuscation_function(char)
+    deobfuscated = deobfuscated .. char
+  end
+  return deobfuscated
+end
+
+-- Ask the user for input
+local input = io.read()
+
+-- Obfuscate the input text and print the obfuscated output
+local obfuscated_text = obfuscate(input)
+print(obfuscated_text)
+
+-- Deobfuscate the obfuscated text using the same dynamically generated algorithm and print the original text
+local deobfuscated_text = deobfuscate(obfuscated_text)
+print(deobfuscated_text)
